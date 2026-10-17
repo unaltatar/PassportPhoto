@@ -19,6 +19,7 @@ export function evaluatePhoto(m) {
     if (!m.cropFits) reject('noFit')
     if (m.bottomMissingIn > LIMITS.bottomMissingIn) reject('shouldersMissing')
     if (m.otherPerson) reject('otherPerson')
+    if (m.headCover > LIMITS.headCover) warn('headCovering')
     if (m.sidesCut) warn('sidesCut')
     if (m.shadowImbalance > LIMITS.shadowImbalance) warn('shadow')
   }

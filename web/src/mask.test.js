@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { alphaFromConfidence, findHeadTop, keepConnected, resizeMask } from './mask.js'
+import { alphaFromConfidence, coverageIn, findHeadTop, keepConnected, resizeMask } from './mask.js'
 
 function grid(width, height, fill) {
   const out = new Uint8ClampedArray(width * height)
@@ -81,5 +81,40 @@ describe('resizeMask', () => {
     expect(out[1]).toBeCloseTo(0.25)
     expect(out[2]).toBeCloseTo(0.75)
     expect(out[3]).toBeCloseTo(1)
+  })
+})
+
+describe('coverageIn', () => {
+  const width = 10
+  const height = 10
+  const band = { x0: 2, x1: 8, y0: 0, y1: 4 }
+  const filled = (value, rows = [0, 4]) => {
+    const out = new Float32Array(width * height)
+    for (let y = rows[0]; y < rows[1]; y++) out.fill(value, y * width, (y + 1) * width)
+    return out
+  }
+
+  it('is high when a hat class covers the band above the forehead', () => {
+    const others = filled(0.9)
+    const clothes = filled(0.05)
+    expect(coverageIn([clothes, others], width, height, band)).toBeCloseTo(0.95)
+  })
+
+  it('is low when the band is hair', () => {
+    const empty = new Float32Array(width * height)
+    expect(coverageIn([empty, empty], width, height, band)).toBe(0)
+  })
+
+  it('caps each pixel at 1 when classes overlap', () => {
+    expect(coverageIn([filled(0.8), filled(0.8)], width, height, band)).toBeCloseTo(1)
+  })
+
+  it('clamps a band that reaches above the image and ignores rows outside it', () => {
+    const others = filled(1, [0, 2])
+    expect(coverageIn([others], width, height, { x0: 2, x1: 8, y0: -5, y1: 4 })).toBeCloseTo(0.5)
+  })
+
+  it('returns 0 for an empty band', () => {
+    expect(coverageIn([filled(1)], width, height, { x0: 2, x1: 8, y0: -6, y1: -1 })).toBe(0)
   })
 })

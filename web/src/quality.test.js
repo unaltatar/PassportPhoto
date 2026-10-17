@@ -88,3 +88,15 @@ describe('evaluatePhoto', () => {
     expect(codes(result)).toEqual(['turned', 'shadow'])
   })
 })
+
+describe('evaluatePhoto head covering', () => {
+  it('warns when a hat or head covering is detected', () => {
+    const result = evaluatePhoto({ ...good, headCover: 0.9 })
+    expect(result.status).toBe('warn')
+    expect(codes(result)).toEqual(['headCovering'])
+  })
+
+  it('says nothing about uncovered hair', () => {
+    expect(evaluatePhoto({ ...good, headCover: 0.04 }).status).toBe('ok')
+  })
+})

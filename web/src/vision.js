@@ -95,8 +95,11 @@ export async function segmentRegion(canvas) {
     }
     return {
       background: read(SEGMENT_CLASSES.background),
+      hair: read(SEGMENT_CLASSES.hair),
       faceSkin: read(SEGMENT_CLASSES.faceSkin),
       bodySkin: read(SEGMENT_CLASSES.bodySkin),
+      clothes: read(SEGMENT_CLASSES.clothes),
+      others: read(SEGMENT_CLASSES.others),
     }
   } finally {
     result.close?.()

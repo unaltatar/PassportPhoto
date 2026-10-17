@@ -14,7 +14,7 @@ import {
   rollAngle,
 } from './geometry.js'
 import { evaluatePhoto } from './quality.js'
-import { alphaFromConfidence, findHeadTop, keepConnected } from './mask.js'
+import { alphaFromConfidence, coverageIn, findHeadTop, keepConnected } from './mask.js'
 import { liftShadows, luminance, shadowImbalance, weightedBlur, weightedPercentile } from './tone.js'
 import { createCanvas, drawGuides, renderPassport } from './render.js'
 import { drawSheet, layoutSheet } from './sheet.js'
@@ -326,6 +326,13 @@ async function buildScene(base, faces, index) {
   const alpha = keepConnected(alphaFromConfidence(seg.background), rw, rh, centerX - region.x, (eyeY + chin.y) / 2 - region.y)
   const topRow = findHeadTop(alpha, rw, rh, left.x - region.x, right.x - region.x)
   const headTopY = topRow >= 0 ? region.y + topRow : forehead.y
+  const faceWidth = right.x - left.x
+  const headCover = coverageIn([seg.clothes, seg.others], rw, rh, {
+    x0: left.x + 0.2 * faceWidth - region.x,
+    x1: right.x - 0.2 * faceWidth - region.x,
+    y0: forehead.y - 0.45 * faceHeight - region.y,
+    y1: forehead.y - 0.05 * faceHeight - region.y,
+  })
   const headCut = (topRow === 0 && region.y === 0) || chin.y >= work.height - 1 || forehead.y <= 0
   const geometry = { eyeY, centerX, headTopY, chinY: chin.y }
 
@@ -363,6 +370,7 @@ async function buildScene(base, faces, index) {
     rightEdge: edgeRows(rw - 1, region.x + rw === work.width),
     geometry,
     headCut,
+    headCover,
     headPx: chin.y - headTopY,
     pose: wf.pose,
     roll: rollDeg,
@@ -462,6 +470,7 @@ function render() {
       blinkLeft: scene.blinkLeft,
       blinkRight: scene.blinkRight,
       headCut: scene.headCut,
+      headCover: scene.headCover,
       headPx: scene.headPx,
       cropFits: !!frame,
       bottomMissingIn: frame ? bottomMissingIn(frame, bottomLimit) : 0,
@@ -525,6 +534,8 @@ function renderSummary(scene, metrics, m) {
     rows.push([t('sumPose'), t('poseValue', { yaw: deg(metrics.yaw), pitch: deg(metrics.pitch), roll: deg(metrics.roll) }), pose])
     const closed = Math.max(metrics.blinkLeft, metrics.blinkRight) > LIMITS.eyeBlink
     rows.push([t('sumEyesOpen'), t(closed ? 'eyesClosedShort' : 'eyesOpen'), closed ? 'reject' : 'ok'])
+    const covered = metrics.headCover > LIMITS.headCover
+    rows.push([t('sumHeadCover'), t(covered ? 'headCoverFound' : 'headCoverNone'), covered ? 'warn' : 'ok'])
     const resolution = metrics.headPx < LIMITS.minHeadPx ? 'reject' : metrics.headPx < LIMITS.warnHeadPx ? 'warn' : 'ok'
     rows.push([t('sumResolution'), `${Math.round(metrics.headPx)} px`, resolution])
     rows.push([t('sumShadow'), `${Math.round(scene.imbalance * 100)}%`, scene.imbalance > LIMITS.shadowImbalance ? 'warn' : 'ok'])

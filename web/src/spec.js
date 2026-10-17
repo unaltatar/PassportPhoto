@@ -13,7 +13,8 @@ export const TOP_MARGIN_MIN_IN = 0.1
 
 export const LIMITS = {
   yawDeg: 8,
-  pitchDeg: 10,
+  pitchDeg: 20,
+  pitchWarnDeg: 10,
   rollDeg: 10,
   eyeBlink: 0.6,
   minHeadPx: HEAD_MIN_IN * DPI,

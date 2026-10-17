@@ -10,6 +10,7 @@ export function evaluatePhoto(m) {
   } else {
     if (Math.abs(m.yaw) > LIMITS.yawDeg) reject('turned')
     if (Math.abs(m.pitch) > LIMITS.pitchDeg) reject('tiltedUpDown')
+    else if (Math.abs(m.pitch) > LIMITS.pitchWarnDeg) warn('tiltedUpDownWarn')
     if (Math.abs(m.roll) > LIMITS.rollDeg) reject('tilted')
     if (Math.max(m.blinkLeft, m.blinkRight) > LIMITS.eyeBlink) reject('eyesClosed')
     if (m.headCut) reject('headCut')

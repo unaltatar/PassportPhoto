@@ -521,7 +521,8 @@ function renderSummary(scene, metrics, m) {
     }
     const poseOk =
       Math.abs(metrics.yaw) <= LIMITS.yawDeg && Math.abs(metrics.pitch) <= LIMITS.pitchDeg && Math.abs(metrics.roll) <= LIMITS.rollDeg
-    rows.push([t('sumPose'), t('poseValue', { yaw: deg(metrics.yaw), pitch: deg(metrics.pitch), roll: deg(metrics.roll) }), poseOk ? 'ok' : 'reject'])
+    const pose = !poseOk ? 'reject' : Math.abs(metrics.pitch) > LIMITS.pitchWarnDeg ? 'warn' : 'ok'
+    rows.push([t('sumPose'), t('poseValue', { yaw: deg(metrics.yaw), pitch: deg(metrics.pitch), roll: deg(metrics.roll) }), pose])
     const closed = Math.max(metrics.blinkLeft, metrics.blinkRight) > LIMITS.eyeBlink
     rows.push([t('sumEyesOpen'), t(closed ? 'eyesClosedShort' : 'eyesOpen'), closed ? 'reject' : 'ok'])
     const resolution = metrics.headPx < LIMITS.minHeadPx ? 'reject' : metrics.headPx < LIMITS.warnHeadPx ? 'warn' : 'ok'

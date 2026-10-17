@@ -36,8 +36,17 @@ describe('evaluatePhoto', () => {
   })
 
   it('rejects pitch and roll beyond the limits', () => {
-    expect(codes(evaluatePhoto({ ...good, pitch: 14 }))).toEqual(['tiltedUpDown'])
+    expect(codes(evaluatePhoto({ ...good, pitch: 22 }))).toEqual(['tiltedUpDown'])
+    expect(codes(evaluatePhoto({ ...good, pitch: -21 }))).toEqual(['tiltedUpDown'])
     expect(codes(evaluatePhoto({ ...good, roll: -11 }))).toEqual(['tilted'])
+  })
+
+  it('only warns about a small up or down tilt, like an accepted photo that reads 13 degrees', () => {
+    const result = evaluatePhoto({ ...good, pitch: 13 })
+    expect(result.status).toBe('warn')
+    expect(codes(result)).toEqual(['tiltedUpDownWarn'])
+    expect(evaluatePhoto({ ...good, pitch: -15 }).status).toBe('warn')
+    expect(evaluatePhoto({ ...good, pitch: 9 }).status).toBe('ok')
   })
 
   it('rejects closed eyes', () => {

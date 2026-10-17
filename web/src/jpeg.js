@@ -32,3 +32,25 @@ export function readJpegDpi(bytes) {
   if (!hasJfifApp0(bytes) || bytes[13] !== 1) return null
   return { x: (bytes[14] << 8) | bytes[15], y: (bytes[16] << 8) | bytes[17] }
 }
+
+export async function encodeWithinBytes(encode, maxBytes, { start, min, steps = 8 }) {
+  const first = await encode(start)
+  if (first.length <= maxBytes) return first
+
+  let best = await encode(min)
+  if (best.length > maxBytes) throw new Error(`JPEG is larger than ${maxBytes} bytes even at quality ${min}`)
+
+  let lo = min
+  let hi = start
+  for (let i = 0; i < steps; i++) {
+    const mid = (lo + hi) / 2
+    const bytes = await encode(mid)
+    if (bytes.length <= maxBytes) {
+      best = bytes
+      lo = mid
+    } else {
+      hi = mid
+    }
+  }
+  return best
+}

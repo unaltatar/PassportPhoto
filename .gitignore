@@ -1,0 +1,7 @@
+node_modules
+web/dist
+web/public/mediapipe/
+*.log
+.DS_Store
+.claude/worktrees/
+.claude/settings.local.json

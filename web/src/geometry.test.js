@@ -3,14 +3,19 @@ import {
   applyAdjustments,
   bottomMissingIn,
   boundingBox,
+  clampRect,
   computeCrop,
   eulerFromMatrix,
+  expandFaceBox,
   frameSourceRect,
+  iou,
   measure,
+  mergeDetections,
   pickMainFace,
   rectsIntersect,
   rollAngle,
   rotatePoint,
+  tileOrigins,
 } from './geometry.js'
 import { HEAD_MAX_IN, HEAD_MIN_IN, HEAD_TARGET_IN, EYE_MIN_IN, EYE_MAX_IN, TOP_MARGIN_MIN_IN } from './spec.js'
 
@@ -203,5 +208,58 @@ describe('frame helpers', () => {
     const a = { x: 0, y: 0, width: 10, height: 10 }
     expect(rectsIntersect(a, { x: 5, y: 5, width: 10, height: 10 })).toBe(true)
     expect(rectsIntersect(a, { x: 10, y: 0, width: 5, height: 5 })).toBe(false)
+  })
+})
+
+describe('clampRect and expandFaceBox', () => {
+  it('clamps a rectangle to the image', () => {
+    expect(clampRect(-10.5, 5.2, 50.1, 300, 40, 100)).toEqual({ x: 0, y: 5, width: 40, height: 95 })
+  })
+
+  it('leaves room for the head, shoulders and frame around a face', () => {
+    const box = { x: 900, y: 800, width: 180, height: 200 }
+    const rect = expandFaceBox(box, 4000, 4000)
+    expect(rect.x).toBeLessThanOrEqual(990 - 2 * 200)
+    expect(rect.x + rect.width).toBeGreaterThanOrEqual(990 + 2 * 200)
+    expect(rect.y).toBeLessThanOrEqual(800 - 1.5 * 200)
+    expect(rect.y + rect.height).toBeGreaterThanOrEqual(1000 + 1.8 * 200)
+  })
+
+  it('stays inside the image near an edge', () => {
+    const rect = expandFaceBox({ x: 10, y: 10, width: 100, height: 120 }, 500, 400)
+    expect(rect.x).toBe(0)
+    expect(rect.y).toBe(0)
+    expect(rect.x + rect.width).toBeLessThanOrEqual(500)
+    expect(rect.y + rect.height).toBeLessThanOrEqual(400)
+  })
+})
+
+describe('iou and mergeDetections', () => {
+  const a = { x: 0, y: 0, width: 10, height: 10 }
+
+  it('measures overlap', () => {
+    expect(iou(a, a)).toBe(1)
+    expect(iou(a, { x: 20, y: 0, width: 10, height: 10 })).toBe(0)
+    expect(iou(a, { x: 5, y: 0, width: 10, height: 10 })).toBeCloseTo(50 / 150)
+  })
+
+  it('keeps the best scored copy of the same face', () => {
+    const items = [
+      { box: a, score: 2, id: 'edge' },
+      { box: { x: 1, y: 1, width: 10, height: 10 }, score: 9, id: 'centred' },
+      { box: { x: 50, y: 50, width: 10, height: 10 }, score: 1, id: 'other' },
+    ]
+    expect(mergeDetections(items).map((i) => i.id)).toEqual(['centred', 'other'])
+  })
+})
+
+describe('tileOrigins', () => {
+  it('spreads tiles from edge to edge', () => {
+    expect(tileOrigins(1000, 500, 3)).toEqual([0, 250, 500])
+  })
+
+  it('uses one tile when it already covers the image', () => {
+    expect(tileOrigins(1000, 1000, 3)).toEqual([0])
+    expect(tileOrigins(1000, 400, 1)).toEqual([0])
   })
 })

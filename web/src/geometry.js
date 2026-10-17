@@ -124,3 +124,41 @@ export function bottomMissingIn(frame, imageHeight) {
 export function rectsIntersect(a, b) {
   return a.x < b.x + b.width && b.x < a.x + a.width && a.y < b.y + b.height && b.y < a.y + a.height
 }
+
+export function clampRect(x1, y1, x2, y2, width, height) {
+  const x = Math.max(0, Math.floor(x1))
+  const y = Math.max(0, Math.floor(y1))
+  return {
+    x,
+    y,
+    width: Math.max(1, Math.min(width, Math.ceil(x2)) - x),
+    height: Math.max(1, Math.min(height, Math.ceil(y2)) - y),
+  }
+}
+
+export function expandFaceBox(box, width, height) {
+  const h = box.height
+  const cx = box.x + box.width / 2
+  return clampRect(cx - 2.2 * h, box.y - 1.6 * h, cx + 2.2 * h, box.y + 2.9 * h, width, height)
+}
+
+export function iou(a, b) {
+  const w = Math.min(a.x + a.width, b.x + b.width) - Math.max(a.x, b.x)
+  const h = Math.min(a.y + a.height, b.y + b.height) - Math.max(a.y, b.y)
+  if (w <= 0 || h <= 0) return 0
+  const inter = w * h
+  return inter / (a.width * a.height + b.width * b.height - inter)
+}
+
+export function mergeDetections(items, threshold = 0.3) {
+  const kept = []
+  for (const item of [...items].sort((a, b) => b.score - a.score)) {
+    if (kept.every((k) => iou(k.box, item.box) < threshold)) kept.push(item)
+  }
+  return kept
+}
+
+export function tileOrigins(size, tile, n) {
+  if (n <= 1 || tile >= size) return [0]
+  return Array.from({ length: n }, (_, i) => Math.round((i * (size - tile)) / (n - 1)))
+}

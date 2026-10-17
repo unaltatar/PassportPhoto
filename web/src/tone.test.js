@@ -90,4 +90,13 @@ describe('shadowImbalance', () => {
     const even = new Float32Array(width * height).fill(120)
     expect(shadowImbalance(even, skin, width, height, 10)).toBe(0)
   })
+
+  it('only measures inside the given bounds', () => {
+    const { rgba, skin } = halfLitFace()
+    const lum = luminance(rgba)
+    const bright = lum[15]
+    for (let y = 0; y < 5; y++) lum.fill(bright, y * width + 2, y * width + 10)
+    expect(shadowImbalance(lum, skin, width, height, 10, { y0: 0, y1: 5 })).toBeCloseTo(0.0)
+    expect(shadowImbalance(lum, skin, width, height, 10, { y0: 5, y1: 10 })).toBeGreaterThan(0.4)
+  })
 })

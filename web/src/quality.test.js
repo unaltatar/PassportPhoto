@@ -13,6 +13,7 @@ const good = {
   cropFits: true,
   bottomMissingIn: 0,
   otherPerson: false,
+  sidesCut: false,
   shadowImbalance: 0.05,
 }
 
@@ -58,6 +59,12 @@ describe('evaluatePhoto', () => {
     expect(codes(evaluatePhoto({ ...good, cropFits: false }))).toEqual(['noFit'])
     expect(codes(evaluatePhoto({ ...good, bottomMissingIn: 0.3 }))).toEqual(['shouldersMissing'])
     expect(codes(evaluatePhoto({ ...good, otherPerson: true }))).toEqual(['otherPerson'])
+  })
+
+  it('only warns when the shoulders are cut at the sides', () => {
+    const result = evaluatePhoto({ ...good, sidesCut: true })
+    expect(result.status).toBe('warn')
+    expect(codes(result)).toEqual(['sidesCut'])
   })
 
   it('only warns about shadows', () => {

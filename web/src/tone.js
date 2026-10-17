@@ -92,13 +92,13 @@ export function liftShadows(rgba, skin, illumination, target, strength, maxGain 
   return out
 }
 
-export function shadowImbalance(lum, weights, width, height, splitX, minWeight = 0.5) {
+export function shadowImbalance(lum, weights, width, height, splitX, { x0 = 0, x1 = width, y0 = 0, y1 = height, minWeight = 0.5 } = {}) {
   let leftSum = 0
   let leftCount = 0
   let rightSum = 0
   let rightCount = 0
-  for (let y = 0; y < height; y++) {
-    for (let x = 0; x < width; x++) {
+  for (let y = Math.max(0, Math.floor(y0)); y < Math.min(height, Math.ceil(y1)); y++) {
+    for (let x = Math.max(0, Math.floor(x0)); x < Math.min(width, Math.ceil(x1)); x++) {
       const i = y * width + x
       if (weights[i] < minWeight) continue
       if (x < splitX) {

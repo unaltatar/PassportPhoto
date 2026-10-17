@@ -19,7 +19,8 @@ export const LIMITS = {
   minHeadPx: HEAD_MIN_IN * DPI,
   warnHeadPx: HEAD_TARGET_IN * DPI,
   bottomMissingIn: 0.1,
-  shadowImbalance: 0.18,
+  sideMissingIn: 0.05,
+  shadowImbalance: 0.25,
 }
 
 export const SHEET = {

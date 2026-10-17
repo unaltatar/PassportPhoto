@@ -89,19 +89,26 @@ const state = {
 }
 
 class StatusError extends Error {
-  constructor(key) {
+  constructor(key, detail = '') {
     super(key)
     this.key = key
+    this.detail = detail
   }
+}
+
+function describeError(error) {
+  if (error instanceof Event) return `${error.type} event ${error.target?.src ?? ''}`.trim()
+  const text = error instanceof Error ? `${error.name}: ${error.message}` : String(error)
+  return text.slice(0, 300)
 }
 
 const nextFrame = () => new Promise((resolve) => requestAnimationFrame(() => setTimeout(resolve, 0)))
 
-function setStatus(key, isError = false) {
-  state.status = key ? { key, isError } : null
+function setStatus(key, isError = false, detail = '') {
+  state.status = key ? { key, isError, detail } : null
   el.status.hidden = !key
   el.status.classList.toggle('error', isError)
-  el.status.textContent = key ? t(key) : ''
+  el.status.textContent = key ? t(key) + (detail ? ` ${t('errorDetail', { detail })}` : '') : ''
 }
 
 async function runTask(task) {
@@ -115,7 +122,8 @@ async function runTask(task) {
     setStatus(null)
   } catch (error) {
     console.error(error)
-    setStatus(error instanceof StatusError ? error.key : 'processError', true)
+    if (error instanceof StatusError) setStatus(error.key, true, error.detail)
+    else setStatus('processError', true, describeError(error))
   } finally {
     state.busy = false
     document.body.classList.remove('busy')
@@ -131,7 +139,7 @@ async function ensureModels() {
     state.modelsReady = true
   } catch (error) {
     console.error(error)
-    throw new StatusError('modelError')
+    throw new StatusError('modelError', describeError(error))
   }
   setStatus('processing')
   await nextFrame()
@@ -619,7 +627,7 @@ function renderLabels() {
     button.setAttribute('aria-pressed', String(button.dataset.lang === getLanguage()))
   }
   el.boxMode.textContent = t(state.boxMode ? 'selectBoxCancel' : 'selectBox')
-  if (state.status) setStatus(state.status.key, state.status.isError)
+  if (state.status) setStatus(state.status.key, state.status.isError, state.status.detail)
   renderFacesInfo()
   if (state.scene) render()
 }

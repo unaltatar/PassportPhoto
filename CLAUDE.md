@@ -31,7 +31,8 @@ npm --prefix web run preview        # serve the production build
 - `web/src/render.js`, `sheet.js` (`drawSheet`): canvas drawing.
 - `web/src/main.js`: UI wiring and state. `web/src/i18n.js`: Turkish and English strings. Every visible string goes through it.
 - `web/scripts/copy-mediapipe-wasm.mjs`: copies the MediaPipe wasm files from `node_modules` into `web/public/mediapipe/` before `dev` and `build`. That folder is generated and ignored by git.
-- MediaPipe sends performance and usage metrics (never images) to Google at `odml.pa.googleapis.com`. This is accepted and disclosed in the `privacy` string in `i18n.js`. Never claim that no data leaves the browser.
+- MediaPipe sends performance and usage metrics (never images) to Google at `odml.pa.googleapis.com`. The owner chose to keep the `privacy` string in `i18n.js` short and about the photo only. Every claim there must stay true: talk about the photo, never claim that no data at all leaves the browser.
+- No usage counter or analytics. The owner decided against sending visitor data to another service.
 - Models load from `storage.googleapis.com/mediapipe-models/`. Use relative paths (`./mediapipe/wasm`) for local assets, never a leading `/`, or it breaks on GitHub Pages.
 
 ## Photo rules

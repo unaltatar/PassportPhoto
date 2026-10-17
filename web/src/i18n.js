@@ -2,7 +2,7 @@ const strings = {
   tr: {
     title: 'Pasaport Fotoğrafı',
     subtitle: 'ABD pasaportu için 2x2 inç fotoğraf ve 4x6 baskı sayfası',
-    privacy: 'Fotoğrafınız cihazınızdan çıkmaz. Tüm işlem bu tarayıcıda yapılır, fotoğraf hiçbir sunucuya yüklenmez. Yüz tanıma için kullanılan Google MediaPipe kütüphanesi, Google\'a fotoğraf içermeyen performans ve kullanım bilgisi gönderir.',
+    privacy: 'Fotoğrafınız cihazınızdan çıkmaz ve hiçbir yerde saklanmaz. Tüm işlem bu tarayıcıda yapılır.',
     upload: 'Fotoğraf seçin veya buraya sürükleyin',
     uploadHint: 'En iyi sonuç için: kameraya düz bakın, gözler açık, omuzlar görünür, yüzde eşit ışık.',
     loadingModels: 'Modeller yükleniyor (ilk seferde yaklaşık 20 MB)...',
@@ -78,7 +78,7 @@ const strings = {
   en: {
     title: 'Passport Photo',
     subtitle: 'A 2x2 inch US passport photo and a 4x6 print sheet',
-    privacy: 'Your photo never leaves your device. Everything runs in this browser and the photo is not uploaded to any server. The Google MediaPipe library used for face detection sends Google performance and usage data that does not include your photo.',
+    privacy: 'Your photo never leaves your device and is not stored anywhere. Everything runs in this browser.',
     upload: 'Choose a photo or drop it here',
     uploadHint: 'For best results: look straight at the camera, eyes open, shoulders visible, even light on the face.',
     loadingModels: 'Loading models (about 20 MB the first time)...',

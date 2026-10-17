@@ -132,6 +132,7 @@ async function runTask(task) {
 
 async function ensureModels() {
   if (state.modelsReady) return
+  if (typeof WebAssembly === 'undefined') throw new StatusError('noWasm')
   setStatus('loadingModels')
   await nextFrame()
   try {
@@ -747,3 +748,4 @@ el.downloadDigital.addEventListener('click', () => {
 })
 
 renderLabels()
+if (typeof WebAssembly === 'undefined') setStatus('noWasm', true)

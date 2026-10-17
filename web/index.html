@@ -7,7 +7,111 @@
     <title>Passport Photo</title>
   </head>
   <body>
-    <div id="app"></div>
+    <header class="top">
+      <div class="brand">
+        <h1 data-i18n="title"></h1>
+        <p data-i18n="subtitle"></p>
+      </div>
+      <div class="lang" role="group" aria-label="Language">
+        <button type="button" data-lang="tr">TR</button>
+        <button type="button" data-lang="en">EN</button>
+      </div>
+    </header>
+
+    <main>
+      <p class="privacy" data-i18n="privacy"></p>
+
+      <section class="card" id="upload">
+        <label class="drop" id="drop">
+          <input type="file" id="file" accept="image/*" />
+          <span class="drop-title" data-i18n="upload"></span>
+          <span class="drop-hint" data-i18n="uploadHint"></span>
+        </label>
+        <p class="status" id="status" role="status" hidden></p>
+      </section>
+
+      <section class="card" id="source" hidden>
+        <h2 data-i18n="sourceTitle"></h2>
+        <p class="muted" id="faces-info"></p>
+        <div class="overview-wrap">
+          <canvas id="overview"></canvas>
+        </div>
+        <div class="row">
+          <button type="button" class="secondary" id="box-mode"></button>
+        </div>
+        <p class="muted" id="box-hint" data-i18n="selectBoxHint" hidden></p>
+      </section>
+
+      <section class="card" id="result" hidden>
+        <h2 data-i18n="resultTitle"></h2>
+        <div class="verdict" id="verdict"></div>
+        <ul class="reasons" id="reasons"></ul>
+        <div class="result-grid">
+          <div class="preview-col">
+            <canvas id="preview" width="600" height="600"></canvas>
+            <label class="check"><input type="checkbox" id="guides" checked /> <span data-i18n="guides"></span></label>
+          </div>
+          <div class="controls">
+            <table class="summary" id="summary"></table>
+            <div class="group">
+              <label class="check"><input type="checkbox" id="background" checked /> <span data-i18n="background"></span></label>
+              <p class="note" data-i18n="backgroundNote"></p>
+              <label class="check"><input type="checkbox" id="shadow" /> <span data-i18n="shadowLift"></span></label>
+              <label class="range">
+                <span data-i18n="strength"></span>
+                <input type="range" id="strength" min="0.1" max="1" step="0.05" value="0.6" disabled />
+              </label>
+            </div>
+            <div class="group">
+              <label class="range">
+                <span><span data-i18n="headSize"></span> <output id="head-value"></output></span>
+                <input type="range" id="head-size" min="1" max="1.375" step="0.005" />
+              </label>
+              <div class="nudge-row">
+                <span data-i18n="position"></span>
+                <div class="nudge">
+                  <button type="button" class="icon" data-move="up" data-i18n-aria="moveUp">&#8593;</button>
+                  <button type="button" class="icon" data-move="down" data-i18n-aria="moveDown">&#8595;</button>
+                  <button type="button" class="icon" data-move="left" data-i18n-aria="moveLeft">&#8592;</button>
+                  <button type="button" class="icon" data-move="right" data-i18n-aria="moveRight">&#8594;</button>
+                </div>
+                <button type="button" class="secondary" id="reset" data-i18n="reset"></button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="muted" id="download-note" data-i18n="downloadsDisabled" hidden></p>
+      </section>
+
+      <section class="card" id="sheet-section" hidden>
+        <h2 data-i18n="sheetTitle"></h2>
+        <canvas id="sheet" width="1800" height="1200"></canvas>
+        <div class="downloads">
+          <button type="button" class="primary" id="download-sheet" data-i18n="downloadSheet"></button>
+          <button type="button" class="secondary" id="download-digital"></button>
+        </div>
+        <p class="muted" data-i18n="digitalNote"></p>
+        <h3 data-i18n="printTitle"></h3>
+        <ol class="steps">
+          <li data-i18n="print1"></li>
+          <li data-i18n="print2"></li>
+          <li data-i18n="print3"></li>
+          <li data-i18n="print4"></li>
+        </ol>
+      </section>
+
+      <section class="card">
+        <h2 data-i18n="rulesTitle"></h2>
+        <ul class="rules">
+          <li data-i18n="rule1"></li>
+          <li data-i18n="rule2"></li>
+          <li data-i18n="rule3"></li>
+          <li data-i18n="rule4"></li>
+          <li data-i18n="rule5"></li>
+        </ul>
+      </section>
+    </main>
+
     <script type="module" src="./src/main.js"></script>
   </body>
 </html>

@@ -88,9 +88,7 @@
         <canvas id="sheet" width="1800" height="1200"></canvas>
         <div class="downloads">
           <button type="button" class="primary" id="download-sheet" data-i18n="downloadSheet"></button>
-          <button type="button" class="secondary" id="download-digital"></button>
         </div>
-        <p class="muted" data-i18n="digitalNote"></p>
         <h3 data-i18n="printTitle"></h3>
         <ol class="steps">
           <li data-i18n="print1"></li>
@@ -98,6 +96,20 @@
           <li data-i18n="print3"></li>
           <li data-i18n="print4"></li>
         </ol>
+      </section>
+
+      <section class="card" id="single-section" hidden>
+        <h2 data-i18n="singleTitle"></h2>
+        <div class="downloads">
+          <button type="button" class="secondary" id="download-digital"></button>
+          <button type="button" class="secondary" id="download-dv" data-i18n="downloadDv"></button>
+        </div>
+        <p class="warn-text" id="dv-shadow-note" data-i18n="dvShadowNote" hidden></p>
+        <ul class="steps">
+          <li data-i18n="digitalNote"></li>
+          <li data-i18n="dvNote"></li>
+          <li data-i18n="greenCardNote"></li>
+        </ul>
       </section>
 
       <section class="card">

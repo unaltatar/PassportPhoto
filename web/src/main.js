@@ -18,10 +18,11 @@ import { alphaFromConfidence, findHeadTop, keepConnected } from './mask.js'
 import { liftShadows, luminance, shadowImbalance, weightedBlur, weightedPercentile } from './tone.js'
 import { createCanvas, drawGuides, renderPassport } from './render.js'
 import { drawSheet, layoutSheet } from './sheet.js'
-import { setJpegDpi } from './jpeg.js'
+import { encodeWithinBytes, setJpegDpi } from './jpeg.js'
 import {
   DIGITAL,
   DPI,
+  DV,
   EYE_MAX_IN,
   EYE_MIN_IN,
   HEAD_MAX_IN,
@@ -60,7 +61,10 @@ const el = {
   sheetSection: $('sheet-section'),
   sheet: $('sheet'),
   downloadSheet: $('download-sheet'),
+  singleSection: $('single-section'),
   downloadDigital: $('download-digital'),
+  downloadDv: $('download-dv'),
+  dvShadowNote: $('dv-shadow-note'),
 }
 
 const PREVIEW_PX = 600
@@ -480,10 +484,13 @@ function render() {
   state.allowed = !!frame && verdict.status !== 'reject'
   el.downloadNote.hidden = state.allowed
   el.sheetSection.hidden = !state.allowed
+  el.singleSection.hidden = !state.allowed
   if (state.allowed) {
     drawSheet(el.sheet.getContext('2d'), sheetLayout, state.photo)
     const size = digitalSize(frame)
     el.downloadDigital.textContent = t('downloadDigital', { size })
+    el.downloadDv.disabled = el.shadow.checked
+    el.dvShadowNote.hidden = !el.shadow.checked
   }
 }
 
@@ -598,11 +605,21 @@ function boxFrom(a, b) {
   return { x: Math.min(a.x, b.x), y: Math.min(a.y, b.y), width: Math.abs(a.x - b.x), height: Math.abs(a.y - b.y) }
 }
 
+function jpegEncoder(canvas, dpi) {
+  return async (quality) => {
+    const blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/jpeg', quality))
+    return setJpegDpi(new Uint8Array(await blob.arrayBuffer()), dpi)
+  }
+}
+
 async function download(canvas, name, dpi, quality, minBytes = 0) {
-  const toBlob = (q) => new Promise((resolve) => canvas.toBlob(resolve, 'image/jpeg', q))
-  let blob = await toBlob(quality)
-  if (blob.size < minBytes) blob = await toBlob(1)
-  const bytes = setJpegDpi(new Uint8Array(await blob.arrayBuffer()), dpi)
+  const encode = jpegEncoder(canvas, dpi)
+  let bytes = await encode(quality)
+  if (bytes.length < minBytes) bytes = await encode(1)
+  save(bytes, name)
+}
+
+function save(bytes, name) {
   const url = URL.createObjectURL(new Blob([bytes], { type: 'image/jpeg' }))
   const a = document.createElement('a')
   a.href = url
@@ -736,6 +753,20 @@ el.downloadDigital.addEventListener('click', () => {
   const subject = subjectFor(state.scene, replaceBackground, strength)
   const canvas = renderPassport(state.scene, state.frame, size, replaceBackground, subject)
   download(canvas, 'passport-photo-digital.jpg', Math.round(size / PHOTO_IN), DIGITAL.quality, DIGITAL.minBytes)
+})
+
+el.downloadDv.addEventListener('click', async () => {
+  if (!state.allowed || el.shadow.checked) return
+  const replaceBackground = el.background.checked
+  const subject = subjectFor(state.scene, replaceBackground, 0)
+  const canvas = renderPassport(state.scene, state.frame, DV.px, replaceBackground, subject)
+  const encode = jpegEncoder(canvas, Math.round(DV.px / PHOTO_IN))
+  try {
+    save(await encodeWithinBytes(encode, DV.maxBytes, { start: DV.quality, min: DV.minQuality }), 'dv-lottery-photo.jpg')
+  } catch (error) {
+    console.error(error)
+    setStatus('dvError', true)
+  }
 })
 
 renderLabels()

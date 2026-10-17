@@ -406,6 +406,16 @@ input:focus-visible {
   margin: 16px 0 4px;
 }
 
+.downloads button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.warn-text {
+  color: var(--warn);
+  font-size: 0.92rem;
+}
+
 .steps,
 .rules {
   padding-left: 22px;

@@ -37,6 +37,13 @@ export const DIGITAL = {
   quality: 0.92,
 }
 
+export const DV = {
+  px: 600,
+  maxBytes: 240000,
+  quality: 0.92,
+  minQuality: 0.3,
+}
+
 export const WORK_MAX_PX = 2400
 export const MAX_FACES = 10
 

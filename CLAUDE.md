@@ -42,6 +42,7 @@ npm --prefix web run preview        # serve the production build
   - Head height 1 to 1 3/8 in, chin to top of head: State Department, admin-americanspaces.state.gov/?p=1683.
   - Eye line 1 1/8 to 1 3/8 in from the bottom: secondary sources only (traveldocs.com, smartphone-id.com). Used as a target, never a reason to reject.
   - Online renewal file: travel.state.gov upload page, JPEG between 54 KB and 10 MB. Square 600 to 1200 px comes from third-party guides.
+  - DV Lottery file: State Department visa photo requirements page (travel.state.gov returns 403 here, read at adoption.state.gov/content/travel/en/us-visas/visa-information-resources/photos.html). JPEG, exactly 600x600, at most 240 kB (kept under 240,000 bytes), head 50% to 69% of the height, and "must not be digitally enhanced or altered", so the DV download is off while shadow lift is on.
 
 ## Conventions
 

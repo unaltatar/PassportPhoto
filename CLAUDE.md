@@ -2,7 +2,7 @@
 
 A browser-only web app that turns a portrait into a US passport photo (2x2 in) and a 4x6 in print sheet with four copies. Everything runs in the browser with MediaPipe (face landmarks and selfie segmentation). Photos never leave the device. There is no backend, so the site deploys to GitHub Pages as static files.
 
-`PLAN.md` is the original build plan and records why decisions were made. The rules below are the ones that stay true.
+`docs/PLAN.md` is the original build plan and records why decisions were made. It stays on this machine only (ignored by git), and Claude cannot read it because `.claude/settings.json` denies `docs/**`. The rules below are the ones that stay true.
 
 ## Stack
 
@@ -31,6 +31,7 @@ npm --prefix web run preview        # serve the production build
 - `web/src/render.js`, `sheet.js` (`drawSheet`): canvas drawing.
 - `web/src/main.js`: UI wiring and state. `web/src/i18n.js`: Turkish and English strings. Every visible string goes through it.
 - `web/scripts/copy-mediapipe-wasm.mjs`: copies the MediaPipe wasm files from `node_modules` into `web/public/mediapipe/` before `dev` and `build`. That folder is generated and ignored by git.
+- MediaPipe sends performance and usage metrics (never images) to Google at `odml.pa.googleapis.com`. This is accepted and disclosed in the `privacy` string in `i18n.js`. Never claim that no data leaves the browser.
 - Models load from `storage.googleapis.com/mediapipe-models/`. Use relative paths (`./mediapipe/wasm`) for local assets, never a leading `/`, or it breaks on GitHub Pages.
 
 ## Photo rules
@@ -50,6 +51,7 @@ npm --prefix web run preview        # serve the production build
 - Look up library APIs (MediaPipe, Vite, Vitest) with Context7 rather than guessing.
 - Never use em dashes in anything you write: code, comments, docs, UI copy or commit messages. Use a comma, a colon, brackets or a full stop.
 - Commit messages: short imperative subject, for example `Add shadow lift toggle`.
+- No Claude attribution in commits or pull requests: no `Co-Authored-By` trailer, no "Generated with Claude Code" line, no session link.
 
 ## Do not touch
 

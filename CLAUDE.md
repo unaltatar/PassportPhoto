@@ -10,7 +10,7 @@ A browser-only web app that turns a portrait into a US passport photo (2x2 in) a
 - `@mediapipe/tasks-vision` for face landmarks and segmentation.
 - `heic-to` (LGPL-3.0, bundles libheif) opens HEIC/HEIF in browsers that cannot. Keep it behind the dynamic `import('heic-to')` in `main.js` so it stays a separate file that only HEIC uploads download (about 0.8 MB gzipped). Licenses are listed in `THIRD_PARTY_LICENSES.md`.
 - Vitest for tests of the pure modules.
-- GitHub Pages for hosting, deployed by a GitHub Actions workflow in `.github/workflows/`.
+- GitHub Pages for hosting, deployed by a GitHub Actions workflow in `.github/workflows/`. Live at https://unaltatar.github.io/passportphoto/ (repository `unaltatar/passportphoto`). The path is case-sensitive, so keep the repository name lowercase.
 
 ## Commands
 

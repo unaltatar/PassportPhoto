@@ -23,6 +23,7 @@ export const LIMITS = {
   sideMissingIn: 0.05,
   shadowImbalance: 0.25,
   headCover: 0.4,
+  glasses: 0.03,
 }
 
 export const SHEET = {

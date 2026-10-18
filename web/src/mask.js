@@ -87,7 +87,7 @@ export function resizeMask(src, sw, sh, dw, dh) {
   return out
 }
 
-export function coverageIn(masks, width, height, { x0, x1, y0, y1 }) {
+function meanIn(masks, width, height, { x0, x1, y0, y1 }, value) {
   const a = Math.max(0, Math.floor(x0))
   const b = Math.min(width, Math.ceil(x1))
   const top = Math.max(0, Math.floor(y0))
@@ -99,8 +99,16 @@ export function coverageIn(masks, width, height, { x0, x1, y0, y1 }) {
       const i = y * width + x
       let v = 0
       for (const mask of masks) v += mask[i]
-      sum += Math.min(1, v)
+      sum += value(v)
     }
   }
   return sum / ((b - a) * (bottom - top))
+}
+
+export function coverageIn(masks, width, height, rect) {
+  return meanIn(masks, width, height, rect, (v) => Math.min(1, v))
+}
+
+export function fractionAbove(masks, width, height, rect, threshold) {
+  return meanIn(masks, width, height, rect, (v) => (v > threshold ? 1 : 0))
 }

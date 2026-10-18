@@ -100,3 +100,15 @@ describe('evaluatePhoto head covering', () => {
     expect(evaluatePhoto({ ...good, headCover: 0.04 }).status).toBe('ok')
   })
 })
+
+describe('evaluatePhoto glasses', () => {
+  it('warns when glasses are detected', () => {
+    const result = evaluatePhoto({ ...good, glasses: 0.08 })
+    expect(result.status).toBe('warn')
+    expect(codes(result)).toEqual(['glasses'])
+  })
+
+  it('says nothing when the bridge of the nose is clear', () => {
+    expect(evaluatePhoto({ ...good, glasses: 0 }).status).toBe('ok')
+  })
+})

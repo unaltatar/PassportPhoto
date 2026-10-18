@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { alphaFromConfidence, coverageIn, findHeadTop, keepConnected, resizeMask } from './mask.js'
+import { alphaFromConfidence, coverageIn, findHeadTop, fractionAbove, keepConnected, resizeMask } from './mask.js'
 
 function grid(width, height, fill) {
   const out = new Uint8ClampedArray(width * height)
@@ -116,5 +116,31 @@ describe('coverageIn', () => {
 
   it('returns 0 for an empty band', () => {
     expect(coverageIn([filled(1)], width, height, { x0: 2, x1: 8, y0: -6, y1: -1 })).toBe(0)
+  })
+})
+
+describe('fractionAbove', () => {
+  const width = 10
+  const height = 10
+  const bridge = { x0: 4, x1: 6, y0: 4, y1: 6 }
+  const withPixels = (value, indices) => {
+    const out = new Float32Array(width * height).fill(0.02)
+    for (const i of indices) out[i] = value
+    return out
+  }
+
+  it('counts the share of pixels the model is sure about', () => {
+    const others = withPixels(0.9, [44, 45])
+    expect(fractionAbove([others], width, height, bridge, 0.5)).toBeCloseTo(0.5)
+  })
+
+  it('ignores the weak background level of the class', () => {
+    expect(fractionAbove([withPixels(0.3, [44, 45, 54, 55])], width, height, bridge, 0.5)).toBe(0)
+  })
+
+  it('clamps the rectangle to the image and returns 0 when nothing is left', () => {
+    const others = withPixels(0.9, [0, 1, 10, 11])
+    expect(fractionAbove([others], width, height, { x0: -2, x1: 2, y0: -2, y1: 2 }, 0.5)).toBe(1)
+    expect(fractionAbove([others], width, height, { x0: 12, x1: 14, y0: 0, y1: 2 }, 0.5)).toBe(0)
   })
 })

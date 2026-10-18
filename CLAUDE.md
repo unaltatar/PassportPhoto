@@ -40,11 +40,12 @@ npm --prefix web run preview        # serve the production build
 - **Never change the shape of the face.** No warping, no pose correction, no retouching. Allowed edits: rotating the whole photo by at most 10 degrees to level a tilted head, uniform scaling, cropping, replacing the background (toggle), and gently lifting shadows on skin (toggle, off by default, never darkens).
 - A photo that does not meet the rules is rejected with a reason and a tip, not fixed. A face turned left, right, up or down is rejected. A small up or down reading (10 to 20 degrees) only warns, because a photo the State Department accepted measured 13 degrees.
 - A hat or head covering only warns, because one worn daily for religious (or medical) reasons is allowed and the tool cannot tell which it is. It is found from the segmenter's clothes and accessory classes in a band above the forehead. Beards are allowed and must not be flagged.
+- Glasses only warn for the same reason (allowed when they cannot be removed for medical reasons). They are found from the share of pixels the segmenter is sure are accessories on the bridge of the nose, between the irises. Do not use the temples: a hat brim reaches them. Measured: thick frames 29%, thin round metal frames 8%, no glasses 0%.
 - Sources for the numbers in `spec.js`:
   - Head height 1 to 1 3/8 in, chin to top of head: State Department, admin-americanspaces.state.gov/?p=1683.
   - Eye line 1 1/8 to 1 3/8 in from the bottom: secondary sources only (traveldocs.com, smartphone-id.com). Used as a target, never a reason to reject.
   - Online renewal file: travel.state.gov upload page, JPEG between 54 KB and 10 MB. Square 600 to 1200 px comes from third-party guides.
-  - Hats and beards: State Department photo requirements page, read at adoption.state.gov/content/travel/en/us-visas/visa-information-resources/photos.html because travel.state.gov returns 403 here: "Do not wear a hat or head covering that obscures the hair or hairline, unless worn daily for a religious purpose", and "growing a beard ... would not generally be considered a significant change of appearance".
+  - Hats and beards: State Department photo requirements page, read at adoption.state.gov/content/travel/en/us-visas/visa-information-resources/photos.html because travel.state.gov returns 403 here: "Do not wear a hat or head covering that obscures the hair or hairline, unless worn daily for a religious purpose", and "growing a beard ... would not generally be considered a significant change of appearance". Glasses, same page: "Eyeglasses are no longer allowed ... except in rare circumstances" "when eyeglasses cannot be removed for medical reasons", with a signed medical statement.
 
 ## Conventions
 

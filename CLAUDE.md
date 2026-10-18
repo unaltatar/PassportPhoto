@@ -8,6 +8,7 @@ A browser-only web app that turns a portrait into a US passport photo (2x2 in) a
 
 - Vite with vanilla JavaScript and plain CSS in `web/`. No framework.
 - `@mediapipe/tasks-vision` for face landmarks and segmentation.
+- `heic-to` (LGPL-3.0, bundles libheif) opens HEIC/HEIF in browsers that cannot. Keep it behind the dynamic `import('heic-to')` in `main.js` so it stays a separate file that only HEIC uploads download (about 0.8 MB gzipped). Licenses are listed in `THIRD_PARTY_LICENSES.md`.
 - Vitest for tests of the pure modules.
 - GitHub Pages for hosting, deployed by a GitHub Actions workflow in `.github/workflows/`.
 
@@ -26,7 +27,7 @@ npm --prefix web run preview        # serve the production build
 ## Layout
 
 - `web/src/spec.js`: US photo rules, print sizes and quality thresholds. Change numbers here, not in other modules.
-- `web/src/geometry.js`, `quality.js`, `mask.js`, `tone.js`, `sheet.js` (`layoutSheet`), `jpeg.js`: pure functions with no DOM or MediaPipe access. Each has a `*.test.js` next to it.
+- `web/src/geometry.js`, `quality.js`, `mask.js`, `tone.js`, `sheet.js` (`layoutSheet`), `jpeg.js`, `heif.js`: pure functions with no DOM or MediaPipe access. Each has a `*.test.js` next to it.
 - `web/src/vision.js`: the only module that talks to MediaPipe.
 - `web/src/render.js`, `sheet.js` (`drawSheet`): canvas drawing.
 - `web/src/main.js`: UI wiring and state. `web/src/i18n.js`: Turkish and English strings. Every visible string goes through it.

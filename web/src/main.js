@@ -19,6 +19,7 @@ import { liftShadows, luminance, shadowImbalance, weightedBlur, weightedPercenti
 import { createCanvas, drawGuides, renderPassport } from './render.js'
 import { drawSheet, layoutSheet } from './sheet.js'
 import { setJpegDpi } from './jpeg.js'
+import { isHeifBrand } from './heif.js'
 import {
   DIGITAL,
   DPI,
@@ -157,10 +158,23 @@ async function decodeImage(file) {
       await img.decode()
     } catch {
       URL.revokeObjectURL(url)
+      if (isHeifBrand(new Uint8Array(await file.slice(0, 12).arrayBuffer()))) return decodeHeic(file)
       throw new StatusError('decodeError')
     }
     state.sourceUrl = url
     return img
+  }
+}
+
+async function decodeHeic(file) {
+  setStatus('decodingHeic')
+  await nextFrame()
+  try {
+    const { heicTo } = await import('heic-to')
+    return await heicTo({ blob: file, type: 'bitmap' })
+  } catch (error) {
+    console.error(error)
+    throw new StatusError('heicError', describeError(error))
   }
 }
 

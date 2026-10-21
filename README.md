@@ -105,8 +105,14 @@ Before `dev` and `build`, a script copies the MediaPipe WebAssembly files from `
 - Hats, head coverings, glasses and beards: [U.S. Department of State photo requirements](https://travel.state.gov/content/travel/en/us-visas/visa-information-resources/photos.html).
 - Digital photo for online renewal (JPEG, 54 KB to 10 MB): U.S. Department of State online renewal page.
 
+## License
+
+Copyright (c) 2026 Unal Tatar. All rights reserved.
+
+The source code is shared for viewing only. No license is granted to copy, modify, distribute or reuse it, in whole or in part. The website itself is free to use.
+
 ## Third-party licenses
 
-See [THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md). MediaPipe is Apache-2.0. heic-to and the libheif library it includes are LGPL-3.0.
+The libraries this site uses keep their own licenses. See [THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md). MediaPipe is Apache-2.0. heic-to and the libheif library it includes are LGPL-3.0.
 
 This project is not affiliated with or endorsed by the U.S. Department of State.

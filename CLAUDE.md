@@ -62,6 +62,7 @@ npm --prefix web run preview        # serve the production build
 
 - `.env` and anything that looks like a secret. Use `.env.example` for variable names.
 - `.github/workflows/` and `.claude/settings.json`, unless asked.
+- Licensing: the code is all rights reserved (see the License section in `README.md`). Do not add a `LICENSE` file or an open source license unless the owner asks.
 
 ## Definition of done
 
